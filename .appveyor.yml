@@ -1,0 +1,12 @@
+version: 1.0.{build}
+image: Visual Studio 2015
+environment:
+  matrix:
+  - PATH: C:\Python35-x64\;C:\Python35-x64\Scripts\;%PATH%
+  - PATH: C:\Miniconda35-x64\;C:\Miniconda35-x64\Scripts\;%PATH%
+install:
+- cmd: git submodule update -q --init --recursive
+build_script:
+- cmd: pip install .
+test_script:
+- cmd: python test.py
