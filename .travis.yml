@@ -24,6 +24,6 @@ before_install:
 - source venv/bin/activate
 install:
 - python setup.py sdist
-- pip install dist/*.tar.gz
+- pip install --verbose dist/*.tar.gz
 script:
 - python tests/test.py

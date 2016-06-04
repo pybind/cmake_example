@@ -10,6 +10,6 @@ install:
 - cmd: git submodule update -q --init --recursive
 build_script:
 - cmd: python setup.py sdist
-- cmd: pip install dist\cmake_example-0.0.1.zip
+- cmd: pip install --verbose dist\cmake_example-0.0.1.zip
 test_script:
 - cmd: python tests\test.py
