@@ -23,6 +23,7 @@ before_install:
 - virtualenv -p python$PYTHON venv
 - source venv/bin/activate
 install:
-- pip install .
+- python setup.py sdist
+- pip install --verbose dist/*.tar.gz
 script:
-- python test.py
+- python tests/test.py
