@@ -1,7 +1,7 @@
 # cmake_example for pybind11
 
 [![Build Status](https://travis-ci.org/pybind/cmake_example.svg?branch=master)](https://travis-ci.org/pybind/cmake_example)
-[![Build status](https://ci.appveyor.com/api/projects/status/8gtjyogdmy9amqm1/branch/master?svg=true)](https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true)](https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master)
 
 An example [pybind11](https://github.com/pybind/pybind11) module built with a
 CMake-based build system. This is useful for C++ codebases that have an existing
