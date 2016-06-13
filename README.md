@@ -52,6 +52,18 @@ distribution, you can add `vs2015_runtime` as a platform-dependent runtime
 requirement for you package: see the `conda.recipe/meta.yaml` file in this example.
 
 
+## Building the documentation
+
+Documentation for the example project is generated using Sphinx. Sphinx has the
+ability to automatically inspect the signatures and documentation strings in
+the extension module to generate beautiful documentation in a variety formats.
+The following command generates HTML-based reference documentation; for other
+formats please refer to the Sphinx manual:
+
+ - `cd cmake_example/docs`
+ - `make html`
+
+
 ## License
 
 Pybind11 is provided under a BSD-style license that can be found in the LICENSE

@@ -1,15 +1,42 @@
-version: 1.0.{build}
+version: '{build}'
 image: Visual Studio 2015
+platform:
+- x86
+- x64
 environment:
   matrix:
-  - PATH: C:\Python27\;C:\Python27\Scripts\;%PATH%
-  - PATH: C:\Python27-x64\;C:\Python27-x64\Scripts\;%PATH%
-  - PATH: C:\Python35\;C:\Python35\Scripts\;%PATH%
-  - PATH: C:\Python35-x64\;C:\Python35-x64\Scripts\;%PATH%
+  - PYTHON: 27
+  - PYTHON: 35
+  - CONDA: 27
+  - CONDA: 35
+matrix:
+  allow_failures:
+  - platform: x86
+    CONDA: 27
 install:
-- cmd: git submodule update -q --init --recursive
+- ps: |
+    git submodule update -q --init --recursive
+    if ($env:PYTHON) {
+      if ($env:PLATFORM -eq "x64") { $env:PYTHON = "$env:PYTHON-x64" }
+      $env:PATH = "C:\Python$env:PYTHON\;C:\Python$env:PYTHON\Scripts\;$env:PATH"
+      pip install --disable-pip-version-check --user --upgrade pip
+    } elseif ($env:CONDA) {
+      if ($env:CONDA -eq "27") { $env:CONDA = "" }
+      if ($env:PLATFORM -eq "x64") { $env:CONDA = "$env:CONDA-x64" }
+      $env:PATH = "C:\Miniconda$env:CONDA\;C:\Miniconda$env:CONDA\Scripts\;$env:PATH"
+      conda config --set always_yes yes --set changeps1 no
+      conda config --add channels conda-forge
+      conda update -q conda
+      conda install -q conda-build
+    }
 build_script:
-- cmd: python setup.py sdist
-- cmd: pip install --verbose dist\cmake_example-0.0.1.zip
+- ps: |
+    if ($env:PYTHON) {
+      python setup.py sdist
+      pip install --verbose dist\cmake_example-0.0.1.zip
+    } elseif ($env:CONDA) {
+      conda build conda.recipe
+      conda install --use-local cmake_example
+    }
 test_script:
-- cmd: python tests\test.py
+- ps: python tests\test.py
