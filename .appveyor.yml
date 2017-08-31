@@ -1,5 +1,5 @@
 version: '{build}'
-image: Visual Studio 2015
+image: Visual Studio 2017
 platform:
 - x86
 - x64
@@ -8,7 +8,7 @@ environment:
   - PYTHON: 27
   - PYTHON: 36
   - CONDA: 27
-  - CONDA: 35
+  - CONDA: 36
 install:
 - ps: |
     git submodule update -q --init --recursive
