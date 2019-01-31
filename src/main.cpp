@@ -1,5 +1,7 @@
 #include <pybind11/pybind11.h>
 
+#include "arugula.h"
+
 int add(int i, int j) {
     return i + j;
 }
@@ -31,6 +33,8 @@ PYBIND11_MODULE(cmake_example, m) {
 
         Some other explanation about the subtract function.
     )pbdoc");
+
+    m.def("test_func", [] () { return test_func(); });
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
