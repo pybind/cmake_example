@@ -40,17 +40,20 @@ class CMakeBuild(build_ext):
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
             "-DPYTHON_EXECUTABLE=" + sys.executable,
-            "-GNinja",
         ]
 
         cfg = "Debug" if self.debug else "Release"
-        cmake_args += ["-DCMAKE_BUILD_TYPE=" + cfg]
 
-        try:
-           compiler_path = self.compiler.compiler_cxx[0]
-           cmake_args += ["-DCMAKE_CXX_COMPILER={0}".format(compiler_path)]
-        except AttributeError:
-            print("Not able to access compiler path, using CMake default")
+        if sys.platform.startswith("win") and not os.getenv("CMAKE_GENERATOR"):
+            # Only needed for multiplatform generators.
+            # We could use ninja and this would be much simpler if we could
+            # communicate the correct settings to find MSVC reliably.
+            build_args = ['--config', cfg]
+            cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
+            if sys.maxsize > 2**32:
+                cmake_args += ['-A', 'x64']
+        else:
+            cmake_args += ["-GNinja", "-DCMAKE_BUILD_TYPE=" + cfg]
 
         cmake_args += ["-DEXAMPLE_VERSION_INFO=" + self.distribution.get_version()]
 
@@ -60,7 +63,7 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
         )
-        subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
+        subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=self.build_temp)
 
 
 setup(
