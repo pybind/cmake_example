@@ -1,4 +1,4 @@
 include README.md LICENSE
+graft pybind11
+graft src
 global-include CMakeLists.txt *.cmake
-recursive-include src *
-recursive-include pybind11/include *.h
