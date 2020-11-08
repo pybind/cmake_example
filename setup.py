@@ -61,21 +61,21 @@ class CMakeBuild(build_ext):
                             PLAT_TO_VCVARS[plat_name]
 
             vc_env = query_vcvarsall(VERSION, plat_spec)
-            for key in vc_env:
-                os.environ[key] = vc_env[key]
+            os.environ["lib"] = vc_env["lib"]
+            os.environ["include"] = vc_env["include"]
+            os.environ["libpath"] = vc_env["libpath"]
+            os.environ["path"] = ";".join([vc_env["path"], os.environ["path"]])
 
             print("INFO:", vc_env)
 
             cc = self.compiler.cc.replace("\\", "/")
             rc = self.compiler.rc.replace("\\", "/")
-            mc = self.compiler.mc.replace("\\", "/")
             linker = self.compiler.linker.replace("\\", "/")
             cmake_args += [
                 "-DCMAKE_C_COMPILER={}".format(cc),
                 "-DCMAKE_CXX_COMPILER={}".format(cc),
                 "-DCMAKE_LINKER={}".format(linker),
                 "-DCMAKE_RC_COMPILER={}".format(rc),
-                "-DCMAKE_MC_COMPILER={}".format(mc),
             ]
 
         cmake_args += [
