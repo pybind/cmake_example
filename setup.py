@@ -47,7 +47,25 @@ class CMakeBuild(build_ext):
         cfg = "Debug" if self.debug else "Release"
 
         if self.compiler.compiler_type == "msvc":
-            self.compiler.initialize(self.plat_name)
+            from distutils.msvc9compiler import VERSION, query_vcvarsall, PLAT_TO_VCVARS, get_platform
+            if not self.compiler.initialized:
+                self.compiler.initialize(self.plat_name)
+
+            plat_name = self.plat_name
+            if plat_name == get_platform() or plat_name == 'win32':
+                # native build or cross-compile to win32
+                plat_spec = PLAT_TO_VCVARS[plat_name]
+            else:
+                # cross compile from win32 -> some 64bit
+                plat_spec = PLAT_TO_VCVARS[get_platform()] + '_' + \
+                            PLAT_TO_VCVARS[plat_name]
+
+            vc_env = query_vcvarsall(VERSION, plat_spec)
+            for key in vc_env:
+                os.environ[key] = vc_env[key]
+
+            print("INFO:", vc_env)
+
             cc = self.compiler.cc.replace("\\", "/")
             rc = self.compiler.rc.replace("\\", "/")
             mc = self.compiler.mc.replace("\\", "/")
@@ -70,7 +88,7 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_temp)
 
         subprocess.check_call(
-            ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
+            ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=os.environ
         )
         subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
 
