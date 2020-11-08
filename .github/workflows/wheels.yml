@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-     - masterWIP
+     - master
   release:
     types:
       - published

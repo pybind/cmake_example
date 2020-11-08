@@ -42,47 +42,45 @@ class CMakeBuild(build_ext):
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
+            "-DEXAMPLE_VERSION_INFO={}".format(self.distribution.get_version()),
         ]
+        build_args = []
 
         cfg = "Debug" if self.debug else "Release"
 
         if self.compiler.compiler_type == "msvc":
-            from distutils.msvc9compiler import VERSION, query_vcvarsall, PLAT_TO_VCVARS, get_platform
+            from distutils.msvc9compiler import (
+                VERSION,
+                query_vcvarsall,
+                PLAT_TO_VCVARS,
+                get_platform,
+            )
+
             if not self.compiler.initialized:
                 self.compiler.initialize(self.plat_name)
 
             plat_name = self.plat_name
-            if plat_name == get_platform() or plat_name == 'win32':
+            if plat_name == get_platform() or plat_name == "win32":
                 # native build or cross-compile to win32
                 plat_spec = PLAT_TO_VCVARS[plat_name]
             else:
                 # cross compile from win32 -> some 64bit
-                plat_spec = PLAT_TO_VCVARS[get_platform()] + '_' + \
-                            PLAT_TO_VCVARS[plat_name]
+                plat_spec = (
+                    PLAT_TO_VCVARS[get_platform()] + "_" + PLAT_TO_VCVARS[plat_name]
+                )
 
-            vc_env = query_vcvarsall(VERSION, plat_spec)
-            os.environ["lib"] = vc_env["lib"]
-            os.environ["include"] = vc_env["include"]
-            os.environ["libpath"] = vc_env["libpath"]
-            os.environ["path"] = ";".join([vc_env["path"], os.environ["path"]])
+            print("VERSION", VERSION, plat_spec, plat_name)
 
-            print("INFO:", vc_env)
-
-            cc = self.compiler.cc.replace("\\", "/")
-            rc = self.compiler.rc.replace("\\", "/")
-            linker = self.compiler.linker.replace("\\", "/")
+            cmake_args += ["-A", "Win32" if plat_spec == "x86" else "x64"]
             cmake_args += [
-                "-DCMAKE_C_COMPILER={}".format(cc),
-                "-DCMAKE_CXX_COMPILER={}".format(cc),
-                "-DCMAKE_LINKER={}".format(linker),
-                "-DCMAKE_RC_COMPILER={}".format(rc),
+                "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
             ]
-
-        cmake_args += [
-            "-GNinja",
-            "-DCMAKE_BUILD_TYPE={}".format(cfg),
-            "-DEXAMPLE_VERSION_INFO={}".format(self.distribution.get_version()),
-        ]
+            build_args += ["--config", cfg]
+        else:
+            cmake_args += [
+                "-GNinja",
+                "-DCMAKE_BUILD_TYPE={}".format(cfg),
+            ]
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
@@ -90,7 +88,9 @@ class CMakeBuild(build_ext):
         subprocess.check_call(
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=os.environ
         )
-        subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
+        subprocess.check_call(
+            ["cmake", "--build", "."] + build_args, cwd=self.build_temp
+        )
 
 
 setup(
