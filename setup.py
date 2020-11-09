@@ -8,11 +8,13 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
-VCVARS_TO_CMAKE = {
-    "x86": "Win32",
-    "x64": "x64",
-    "amd64": "ARM",
+PLAT_TO_CMAKE = {
+    "win32": "Win32",
+    "win-amd64": "x64",
+    "win-arm32": "ARM",
+    "win-arm64": "ARM64",
 }
+
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
@@ -42,52 +44,40 @@ class CMakeBuild(build_ext):
         if not extdir.endswith(os.path.sep):
             extdir += os.path.sep
 
+        cfg = "Debug" if self.debug else "Release"
+
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # Using Ninja-build since it a) is available as a wheel and b) multithreads automatically
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
             "-DEXAMPLE_VERSION_INFO={}".format(self.distribution.get_version()),
+            "-DCMAKE_BUILD_TYPE={}".format(cfg),  # not used on MSVC, but no harm
         ]
         build_args = []
 
-        cfg = "Debug" if self.debug else "Release"
-
         if self.compiler.compiler_type == "msvc":
-            from distutils.msvc9compiler import (
-                VERSION,
-                query_vcvarsall,
-                PLAT_TO_VCVARS,
-                get_platform,
-            )
-
             if not self.compiler.initialized:
                 self.compiler.initialize(self.plat_name)
 
-            plat_name = self.plat_name
-            if plat_name == get_platform() or plat_name == "win32":
-                # native build or cross-compile to win32
-                plat_spec = PLAT_TO_VCVARS[plat_name]
-            else:
-                # cross compile from win32 -> some 64bit
-                plat_spec = (
-                    PLAT_TO_VCVARS[get_platform()] + "_" + PLAT_TO_VCVARS[plat_name]
-                )
-
-            print("VERSION", VERSION, plat_spec, plat_name)
-
             cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
-            cmake_generator != "NMake Makefiles" and "Win64" not in cmake_generator and "ARM" not in cmake_generator:
-                cmake_args += ["-A", VCVARS_TO_CMAKE[plat_spec]]
-            cmake_args += [
-                "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
-            ]
-            build_args += ["--config", cfg]
+
+            # Single config generators are handled "normally"
+            single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
+
+            # CMake allows an arch-in-generator style for backward compatibility
+            contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
+
+            if not single_config and not contains_arch:
+                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+
+            if not single_config:
+                cmake_args += [
+                    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
+                ]
+                build_args += ["--config", cfg, "--", "/m"]
         else:
-            cmake_args += [
-                "-GNinja",
-                "-DCMAKE_BUILD_TYPE={}".format(cfg),
-            ]
+            cmake_args += ["-GNinja"]
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)

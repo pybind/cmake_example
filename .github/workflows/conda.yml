@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest, macos-latest]
+        platform: [ubuntu-latest, windows-2016, macos-latest]
         python-version: ["3.6", "3.8"]
 
     runs-on: ${{ matrix.platform }}
@@ -28,10 +28,10 @@ jobs:
           submodules: true
 
       - name: Get conda
-        uses: conda-incubator/setup-miniconda@v1.7.0
+        uses: conda-incubator/setup-miniconda@v2.0.0
         with:
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge,defaults
+          channels: conda-forge
           channel-priority: strict
           
       - name: Prepare
