@@ -1,5 +1,6 @@
 # cmake_example for pybind11
 
+[![Gitter][gitter-badge]][gitter-link]
 
 |      CI              | status |
 |----------------------|--------|
