@@ -6,6 +6,7 @@ import subprocess
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 
+# Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
     "win32": "Win32",
     "win-amd64": "x64",
@@ -14,6 +15,7 @@ PLAT_TO_CMAKE = {
 }
 
 
+# A CMakeExtension needs a sourcedir instead of a file list.
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
@@ -22,17 +24,18 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
     def run(self):
+        # This is optional - will print a nicer error if CMake is missing.
+        # Since we force CMake via PEP 518 in the pyproject.toml, this should
+        # never happen and this whole method can be removed in your code if you
+        # want.
         try:
             out = subprocess.check_output(["cmake", "--version"])
         except OSError:
-            exts = ", ".join(e.name for e in self.extensions)
-            msg = (
-                "CMake must be installed to build the following extensions: {}".format(
-                    exts
-                )
-            )
+            msg = "CMake missing - probably upgrade to a newer version of Pip?"
             raise RuntimeError(msg)
 
+        # To support Python 2, we have to avoid super(), since distutils is all
+        # old-style classes.
         build_ext.run(self)
 
     def build_extension(self, ext):
@@ -45,7 +48,6 @@ class CMakeBuild(build_ext):
         cfg = "Debug" if self.debug else "Release"
 
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
-        # Using Ninja-build since it a) is available as a wheel and b) multithreads automatically
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
@@ -54,10 +56,15 @@ class CMakeBuild(build_ext):
         ]
         build_args = []
 
-        if self.compiler.compiler_type == "msvc":
-            if not self.compiler.initialized:
-                self.compiler.initialize(self.plat_name)
+        if self.compiler.compiler_type != "msvc":
+            # Using Ninja-build since it a) is available as a wheel and b)
+            # multithreads automatically. MSVC would require all variables be
+            # exported for Ninja to pick it up, which is a little tricky to do.
+            cmake_args += ["-GNinja"]
 
+        else:
+            # CMake lets you override the generator - we need to check this.
+            # Can be set with Conda-Build, for example.
             cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
 
             # Single config generators are handled "normally"
@@ -66,16 +73,18 @@ class CMakeBuild(build_ext):
             # CMake allows an arch-in-generator style for backward compatibility
             contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
 
+            # Specify the arch if using MSVC generator, but only if it doesn't
+            # contain a backward-compatibility arch spec already in the
+            # generator name.
             if not single_config and not contains_arch:
                 cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
 
+            # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
                     "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
                 ]
                 build_args += ["--config", cfg, "--", "/m"]
-        else:
-            cmake_args += ["-GNinja"]
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
