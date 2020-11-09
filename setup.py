@@ -8,6 +8,11 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
+VCVARS_TO_CMAKE = {
+    "x86": "Win32",
+    "x64": "x64",
+    "amd64": "ARM",
+}
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
@@ -71,7 +76,9 @@ class CMakeBuild(build_ext):
 
             print("VERSION", VERSION, plat_spec, plat_name)
 
-            cmake_args += ["-A", "Win32" if plat_spec == "x86" else "x64"]
+            cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+            cmake_generator != "NMake Makefiles" and "Win64" not in cmake_generator and "ARM" not in cmake_generator:
+                cmake_args += ["-A", VCVARS_TO_CMAKE[plat_spec]]
             cmake_args += [
                 "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
             ]
