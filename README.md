@@ -19,7 +19,7 @@
 [actions-wheels-link]:     https://github.com/pybind/cmake_example/actions?query=workflow%3AWheels
 [actions-wheels-badge]:    https://github.com/pybind/cmake_example/workflows/Wheels/badge.svg
 [travis-link]:             https://travis-ci.org/pybind/cmake_example
-[travis-badge]:            https://travis-ci.org/pybind/cmake_example.svg?branch=master&status=passed 
+[travis-badge]:            https://travis-ci.org/pybind/cmake_example.svg?branch=master&status=passed
 [appveyor-link]:           https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master
 [appveyor-badge]:          https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true
 

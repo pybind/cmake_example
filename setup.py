@@ -1,12 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
-import re
 import sys
-import platform
 import subprocess
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
 
 PLAT_TO_CMAKE = {
     "win32": "Win32",

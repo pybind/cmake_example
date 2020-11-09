@@ -33,7 +33,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
           channel-priority: strict
-          
+
       - name: Prepare
         run: conda install conda-build conda-verify
 
