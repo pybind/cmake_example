@@ -29,7 +29,7 @@ class CMakeBuild(build_ext):
         # never happen and this whole method can be removed in your code if you
         # want.
         try:
-            out = subprocess.check_output(["cmake", "--version"])
+            subprocess.check_output(["cmake", "--version"])
         except OSError:
             msg = "CMake missing - probably upgrade to a newer version of Pip?"
             raise RuntimeError(msg)
