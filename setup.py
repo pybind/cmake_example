@@ -71,9 +71,11 @@ class CMakeBuild(build_ext):
             if not cmake_generator:
                 cmake_args += ["-GNinja"]
 
-            # CMake 3.12+ only. We can pass
-            if self.parallel:
+            # Python 3 only way to set parallel jobs
+            if hasattr(self, "parallel") and self.parallel:
+                # CMake 3.12+ only.
                 build_args += ["-j{}".format(self.parallel)]
+
             # For older CMake versions, you can use ["--", str(self.parallel)]
             # but it may be more fragile and the "--" needs to be in the right
             # place.
