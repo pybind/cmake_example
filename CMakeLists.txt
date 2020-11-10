@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.4...3.18)
 project(cmake_example)
 
 add_subdirectory(pybind11)

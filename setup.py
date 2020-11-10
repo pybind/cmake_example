@@ -47,6 +47,10 @@ class CMakeBuild(build_ext):
 
         cfg = "Debug" if self.debug else "Release"
 
+        # CMake lets you override the generator - we need to check this.
+        # Can be set with Conda-Build, for example.
+        cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
@@ -62,12 +66,19 @@ class CMakeBuild(build_ext):
             # Using Ninja-build since it a) is available as a wheel and b)
             # multithreads automatically. MSVC would require all variables be
             # exported for Ninja to pick it up, which is a little tricky to do.
-            cmake_args += ["-GNinja"]
+            # Users can override the generator with CMAKE_GENERATOR in CMake
+            # 3.15+.
+            if not cmake_generator:
+                cmake_args += ["-GNinja"]
+
+            # CMake 3.12+ only. We can pass
+            if self.parallel:
+                build_args += ["-j{}".format(self.parallel)]
+            # For older CMake versions, you can use ["--", str(self.parallel)]
+            # but it may be more fragile and the "--" needs to be in the right
+            # place.
 
         else:
-            # CMake lets you override the generator - we need to check this.
-            # Can be set with Conda-Build, for example.
-            cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
 
             # Single config generators are handled "normally"
             single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
