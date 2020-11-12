@@ -71,15 +71,6 @@ class CMakeBuild(build_ext):
             if not cmake_generator:
                 cmake_args += ["-GNinja"]
 
-            # Python 3 only way to set parallel jobs
-            if hasattr(self, "parallel") and self.parallel:
-                # CMake 3.12+ only.
-                build_args += ["-j{}".format(self.parallel)]
-
-            # For older CMake versions, you can use ["--", str(self.parallel)]
-            # but it may be more fragile and the "--" needs to be in the right
-            # place.
-
         else:
 
             # Single config generators are handled "normally"
@@ -99,7 +90,16 @@ class CMakeBuild(build_ext):
                 cmake_args += [
                     "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
                 ]
-                build_args += ["--config", cfg, "--", "/m"]
+                build_args += ["--config", cfg]
+
+        # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
+        # across all generators.
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
+            # self.parallel is a Python 3 only way to set parallel jobs by hand
+            # using -j in the build_ext call, not supported by pip or PyPA-build.
+            if hasattr(self, "parallel") and self.parallel:
+                # CMake 3.12+ only.
+                build_args += ["-j{}".format(self.parallel)]
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
