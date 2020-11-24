@@ -1,0 +1,52 @@
+name: Pip
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["2.7", "3.5", "3.8", "3.9"]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Add requirements
+      run: python -m pip install --upgrade wheel setuptools
+
+    # Eventually Microsoft might have an action for setting up
+    # MSVC, but for now, this action works:
+    - name: Prepare compiler environment for Windows 🐍 2.7
+      if: matrix.python-version == 2.7 && runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    # This makes two environment variables available in the following step(s)
+    - name: Set Windows 🐍 2.7 environment variables
+      if: matrix.python-version == 2.7 && runner.os == 'Windows'
+      shell: bash
+      run: |
+        echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
+        echo "MSSdk=1" >> $GITHUB_ENV
+
+    - name: Build and install
+      run: pip install --verbose .
+
+    - name: Test
+      run: python tests/test.py
