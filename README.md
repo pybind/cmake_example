@@ -4,7 +4,6 @@
 
 |      CI              | status |
 |----------------------|--------|
-| Linux/macOS Travis   | [![Travis-CI][travis-badge]][travis-link] |
 | MSVC 2015            | [![AppVeyor][appveyor-badge]][appveyor-link] |
 | conda.recipe         | [![Conda Actions Status][actions-conda-badge]][actions-conda-link] |
 | pip builds           | [![Pip Actions Status][actions-pip-badge]][actions-pip-link] |
@@ -19,8 +18,6 @@
 [actions-pip-badge]:       https://github.com/pybind/cmake_example/workflows/Pip/badge.svg
 [actions-wheels-link]:     https://github.com/pybind/cmake_example/actions?query=workflow%3AWheels
 [actions-wheels-badge]:    https://github.com/pybind/cmake_example/workflows/Wheels/badge.svg
-[travis-link]:             https://travis-ci.org/pybind/cmake_example
-[travis-badge]:            https://travis-ci.org/pybind/cmake_example.svg?branch=master&status=passed
 [appveyor-link]:           https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master
 [appveyor-badge]:          https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true
 
