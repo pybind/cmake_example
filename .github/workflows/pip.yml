@@ -54,6 +54,7 @@ jobs:
 
     - name: Install library deps with brew
       run: |
+        brew upgrade cmake
         brew install eigen
       if: startsWith(matrix.os, 'mac')
 
