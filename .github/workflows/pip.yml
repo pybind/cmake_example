@@ -45,17 +45,22 @@ jobs:
         echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
         echo "MSSdk=1" >> $GITHUB_ENV
 
+    - name: Update vcpkg
+      run: |
+        cd C:\vcpkg
+        git pull
+        .\\bootstrap-vcpkg.bat
+      if: startsWith(matrix.os, 'win')
+
     - name: Install library deps with vcpkg
       run: |
-        echo $VCPKG_ROOT
         vcpkg install eigen3:x64-windows
         vcpkg integrate install
       if: startsWith(matrix.os, 'win')
 
     - name: Install library deps with brew
       run: |
-        brew upgrade cmake
-        brew install eigen
+        brew install -s eigen
       if: startsWith(matrix.os, 'mac')
 
     - name: Install library deps with apt
