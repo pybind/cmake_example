@@ -45,6 +45,26 @@ jobs:
         echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
         echo "MSSdk=1" >> $GITHUB_ENV
 
+    - name: Install deps with vcpkg
+      run: |
+        echo $VCPKG_ROOT
+        vcpkg install re2:x64-windows
+        vcpkg integrate install
+      if: startsWith(matrix.os, 'win')
+
+    - name: Install deps with brew
+      run: |
+        brew install re2
+      if: startsWith(matrix.os, 'mac')
+
+    - name: Install re2 deps with apt
+      if: runner.os == 'Linux'           
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository -y -s ppa:nerdboy/embedded
+        sudo apt-get install -y libre2-dev
+
     - name: Build and install
       run: pip install --verbose .
 
