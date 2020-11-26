@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <re2/re2.h>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
