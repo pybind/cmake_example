@@ -54,7 +54,7 @@ jobs:
 
     - name: Install library deps with brew
       run: |
-        brew install eigen3
+        brew install eigen
       if: startsWith(matrix.os, 'mac')
 
     - name: Install library deps with apt
