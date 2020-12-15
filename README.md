@@ -4,10 +4,10 @@
 
 |      CI              | status |
 |----------------------|--------|
-| Linux/macOS Travis   | [![Travis-CI][travis-badge]][travis-link] |
 | MSVC 2015            | [![AppVeyor][appveyor-badge]][appveyor-link] |
 | conda.recipe         | [![Conda Actions Status][actions-conda-badge]][actions-conda-link] |
 | pip builds           | [![Pip Actions Status][actions-pip-badge]][actions-pip-link] |
+| [`cibuildwheel`][]   | [![Wheels Actions Status][actions-wheels-badge]][actions-wheels-link] |
 
 [gitter-badge]:            https://badges.gitter.im/pybind/Lobby.svg
 [gitter-link]:             https://gitter.im/pybind/Lobby
@@ -18,15 +18,13 @@
 [actions-pip-badge]:       https://github.com/pybind/cmake_example/workflows/Pip/badge.svg
 [actions-wheels-link]:     https://github.com/pybind/cmake_example/actions?query=workflow%3AWheels
 [actions-wheels-badge]:    https://github.com/pybind/cmake_example/workflows/Wheels/badge.svg
-[travis-link]:             https://travis-ci.org/pybind/cmake_example
-[travis-badge]:            https://travis-ci.org/pybind/cmake_example.svg?branch=master&status=passed
 [appveyor-link]:           https://ci.appveyor.com/project/dean0x7d/cmake-example/branch/master
 [appveyor-badge]:          https://ci.appveyor.com/api/projects/status/57nnxfm4subeug43/branch/master?svg=true
 
 An example [pybind11](https://github.com/pybind/pybind11) module built with a
 CMake-based build system. This is useful for C++ codebases that have an
 existing CMake project structure. This is in many cases superseded by
-[`scikit_build_example`](https://github.com/pybind/pybind11), which uses
+[`scikit_build_example`](https://github.com/pybind/scikit_build_example), which uses
 [scikit-build][], a tool from the makers of CMake designed to allow Python
 packages to be driven from CMake. However, there are still cases where you
 might want full control over the CMake run; and both of these approaches have
@@ -38,12 +36,13 @@ some trade-offs not present in a pure setuptools build (see
 **On Unix (Linux, OS X)**
 
 * A compiler with C++11 support
-* CMake >= 3.4
+* CMake >= 3.4 or Pip 10+
+* Ninja or Pip 10+
 
 **On Windows**
 
 * Visual Studio 2015 or newer (required for all Python versions, see notes below)
-* CMake >= 3.8 (3.8 was the first version to support VS 2015)
+* CMake >= 3.8 (3.8 was the first version to support VS 2015) or Pip 10+
 
 
 ## Installation
@@ -103,6 +102,6 @@ import cmake_example
 cmake_example.add(1, 2)
 ```
 
-
+[`cibuildwheel`]:          https://cibuildwheel.readthedocs.io
 [FAQ]: http://pybind11.rtfd.io/en/latest/faq.html#working-with-ancient-visual-studio-2009-builds-on-windows
 [vs2015_runtime]: https://www.microsoft.com/en-us/download/details.aspx?id=48145
