@@ -23,21 +23,6 @@ class CMakeExtension(Extension):
 
 
 class CMakeBuild(build_ext):
-    def run(self):
-        # This is optional - will print a nicer error if CMake is missing.
-        # Since we force CMake via PEP 518 in the pyproject.toml, this should
-        # never happen and this whole method can be removed in your code if you
-        # want.
-        try:
-            subprocess.check_output(["cmake", "--version"])
-        except OSError:
-            msg = "CMake missing - probably upgrade to a newer version of Pip?"
-            raise RuntimeError(msg)
-
-        # To support Python 2, we have to avoid super(), since distutils is all
-        # old-style classes.
-        build_ext.run(self)
-
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
 
