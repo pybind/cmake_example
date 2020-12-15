@@ -16,6 +16,8 @@ PLAT_TO_CMAKE = {
 
 
 # A CMakeExtension needs a sourcedir instead of a file list.
+# The name must be the _single_ output extension from the CMake build.
+# If you need multiple extensions, see scikit-build.
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
@@ -97,6 +99,8 @@ class CMakeBuild(build_ext):
         )
 
 
+# The information here can also be placed in setup.cfg - better separation of
+# logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="cmake_example",
     version="0.0.1",
