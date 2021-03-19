@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.4...3.18)
-project(cmake_example)
+PROJECT(
+    _phik_simulation
+    VERSION 0.1.0
+    DESCRIPTION "C++ bindings for simulation RXC tables"
+    LANGUAGES CXX
+)
 
-add_subdirectory(pybind11)
-pybind11_add_module(cmake_example src/main.cpp)
-
-# EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a
-# define (VERSION_INFO) here.
-target_compile_definitions(cmake_example PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+SET(CMAKE_CXX_STANDARD 14)
+ADD_SUBDIRECTORY(pybind11)
+INCLUDE(${PROJECT_SOURCE_DIR}/python/phik/simcore/CMakeLists.txt)

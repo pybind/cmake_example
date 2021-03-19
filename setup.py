@@ -3,7 +3,7 @@ import os
 import sys
 import subprocess
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
@@ -102,13 +102,19 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    name="cmake_example",
+    name="phik",
     version="0.0.1",
     author="Dean Moldovan",
     author_email="dean0x7d@gmail.com",
     description="A test project using pybind11 and CMake",
     long_description="",
-    ext_modules=[CMakeExtension("cmake_example")],
+    package_dir={'': 'python'},
+    packages=find_packages(where='python'),
+    # Setuptools requires that package data are located inside the package.
+    # This is a feature and not a bug, see
+    # http://setuptools.readthedocs.io/en/latest/setuptools.html#non-package-data-files
+    package_data={},
+    ext_modules=[CMakeExtension("phik_simulation_core")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
 )
