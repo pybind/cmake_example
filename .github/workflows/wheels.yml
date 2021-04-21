@@ -23,16 +23,11 @@ jobs:
       with:
         submodules: true
 
-    - uses: actions/setup-python@v2
-
-    - name: Install deps
-      run: python -m pip install twine build
-
     - name: Build SDist
-      run: python -m build -s
+      run: pipx run build --sdist
 
     - name: Check metadata
-      run: twine check dist/*
+      run: pipx run twine check dist/*
 
     - uses: actions/upload-artifact@v2
       with:
@@ -52,21 +47,11 @@ jobs:
       with:
         submodules: true
 
-    - uses: actions/setup-python@v2
-
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==1.6.3
-
-    - name: Build wheel
-      run: python -m cibuildwheel --output-dir wheelhouse
+    - uses: joerick/cibuildwheel@v1.10.0
       env:
         # Python 2.7 on Windows requires a workaround for C++11 support,
         # built separately below
         CIBW_SKIP: cp27-win*
-
-    - name: Show files
-      run: ls -lh wheelhouse
-      shell: bash
 
     - name: Verify clean directory
       run: git diff --exit-code
@@ -88,15 +73,10 @@ jobs:
       with:
         submodules: true
 
-    - uses: actions/setup-python@v2
-
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==1.6.3
-
     - uses: ilammy/msvc-dev-cmd@v1
 
     - name: Build 64-bit wheel
-      run: python -m cibuildwheel --output-dir wheelhouse
+      uses: joerick/cibuildwheel@v1.10.0
       env:
         CIBW_BUILD: cp27-win_amd64
         DISTUTILS_USE_SDK: 1
@@ -107,15 +87,11 @@ jobs:
         arch: x86
 
     - name: Build 32-bit wheel
-      run: python -m cibuildwheel --output-dir wheelhouse
+      uses: joerick/cibuildwheel@v1.10.0
       env:
         CIBW_BUILD: cp27-win32
         DISTUTILS_USE_SDK: 1
         MSSdk: 1
-
-    - name: Show files
-      run: ls -lh wheelhouse
-      shell: bash
 
     - name: Verify clean directory
       run: git diff --exit-code
@@ -140,7 +116,7 @@ jobs:
         name: artifact
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.4.1
+    - uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
