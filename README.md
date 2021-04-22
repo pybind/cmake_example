@@ -105,3 +105,4 @@ cmake_example.add(1, 2)
 [`cibuildwheel`]:          https://cibuildwheel.readthedocs.io
 [FAQ]: http://pybind11.rtfd.io/en/latest/faq.html#working-with-ancient-visual-studio-2009-builds-on-windows
 [vs2015_runtime]: https://www.microsoft.com/en-us/download/details.aspx?id=48145
+[scikit-build]: https://scikit-build.readthedocs.io/en/latest/
