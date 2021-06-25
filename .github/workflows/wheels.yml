@@ -52,6 +52,7 @@ jobs:
         # Python 2.7 on Windows requires a workaround for C++11 support,
         # built separately below
         CIBW_SKIP: cp27-win*
+        CIBW_ARCHS_MACOS: auto universal2
 
     - name: Verify clean directory
       run: git diff --exit-code
