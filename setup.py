@@ -118,5 +118,5 @@ setup(
     ext_modules=[CMakeExtension("cmake_example")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    extras_require=["pytest"],
+    extras_require={'test': ["pytest"]},
 )
