@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
+import re
 import subprocess
+import sys
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -79,6 +80,12 @@ class CMakeBuild(build_ext):
                 ]
                 build_args += ["--config", cfg]
 
+        if sys.platform.startswith("darwin"):
+            # Cross-compile support for macOS - respect ARCHFLAGS if set
+            archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+            if archs:
+                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
+
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
         if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
@@ -111,4 +118,5 @@ setup(
     ext_modules=[CMakeExtension("cmake_example")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    extras_require=["pytest"],
 )
