@@ -11,7 +11,8 @@ on:
       - published
 
 env:
-  CIBW_TEST_COMMAND: python {project}/tests/test.py
+  CIBW_TEST_COMMAND: pytest {project}/tests
+  CIBW_TEST_EXTRAS: test
 
 
 jobs:
