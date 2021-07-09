@@ -35,7 +35,7 @@ jobs:
           channel-priority: strict
 
       - name: Prepare
-        run: conda install conda-build conda-verify
+        run: conda install conda-build conda-verify pytest
 
       - name: Build
         run: conda build conda.recipe
@@ -44,4 +44,4 @@ jobs:
         run: conda install -c ${CONDA_PREFIX}/conda-bld/ cmake_example
 
       - name: Test
-        run: python tests/test.py
+        run: python -m pytest

@@ -46,7 +46,7 @@ jobs:
         echo "MSSdk=1" >> $GITHUB_ENV
 
     - name: Build and install
-      run: pip install --verbose .
+      run: pip install --verbose .[test]
 
     - name: Test
-      run: python tests/test.py
+      run: python -m pytest

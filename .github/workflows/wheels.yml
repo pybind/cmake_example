@@ -11,7 +11,8 @@ on:
       - published
 
 env:
-  CIBW_TEST_COMMAND: python {project}/tests/test.py
+  CIBW_TEST_COMMAND: pytest {project}/tests
+  CIBW_TEST_EXTRAS: test
 
 
 jobs:
@@ -52,6 +53,10 @@ jobs:
         # Python 2.7 on Windows requires a workaround for C++11 support,
         # built separately below
         CIBW_SKIP: cp27-win*
+        CIBW_ARCHS_MACOS: auto universal2
+        CIBW_TEST_SKIP: "*universal2:arm64"
+        CIBW_TEST_EXTRAS: test
+        CIBW_TEST_COMMAND: pytest {project}/tests
 
     - name: Verify clean directory
       run: git diff --exit-code
