@@ -48,7 +48,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v1.12.0
+    - uses: pypa/cibuildwheel@v2.2.0
       env:
         # Python 2.7 on Windows requires a workaround for C++11 support,
         # built separately below
@@ -81,7 +81,7 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
 
     - name: Build 64-bit wheel
-      uses: pypa/cibuildwheel@v1.12.0
+      uses: pypa/cibuildwheel@v2.2.0
       env:
         CIBW_BUILD: cp27-win_amd64
         DISTUTILS_USE_SDK: 1
@@ -92,7 +92,7 @@ jobs:
         arch: x86
 
     - name: Build 32-bit wheel
-      uses: pypa/cibuildwheel@v1.12.0
+      uses: pypa/cibuildwheel@v2.2.0
       env:
         CIBW_BUILD: cp27-win32
         DISTUTILS_USE_SDK: 1
