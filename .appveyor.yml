@@ -9,7 +9,6 @@ environment:
     PYTHONWARNINGS: ignore:DEPRECATION
     MSSdk: 1
   matrix:
-  - PYTHON: 27
   - PYTHON: 36
 install:
 - cmd: '"%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %PLATFORM%'
