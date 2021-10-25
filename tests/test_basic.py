@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cmake_example as m
 
 
