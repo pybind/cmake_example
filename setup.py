@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import os
 import re
 import subprocess
 import sys
 
-from setuptools import setup, Extension
+from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
@@ -44,9 +43,9 @@ class CMakeBuild(build_ext):
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
-            "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
-            "-DPYTHON_EXECUTABLE={}".format(sys.executable),
-            "-DCMAKE_BUILD_TYPE={}".format(cfg),  # not used on MSVC, but no harm
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
         ]
         build_args = []
         # Adding CMake arguments set as environment variable
@@ -55,9 +54,7 @@ class CMakeBuild(build_ext):
             cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
 
         # In this example, we pass in the version to C++. You might not need to.
-        cmake_args += [
-            "-DEXAMPLE_VERSION_INFO={}".format(self.distribution.get_version())
-        ]
+        cmake_args += [f"-DEXAMPLE_VERSION_INFO={self.distribution.get_version()}"]
 
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
@@ -90,7 +87,7 @@ class CMakeBuild(build_ext):
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
-                    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
                 ]
                 build_args += ["--config", cfg]
 
@@ -107,7 +104,7 @@ class CMakeBuild(build_ext):
             # using -j in the build_ext call, not supported by pip or PyPA-build.
             if hasattr(self, "parallel") and self.parallel:
                 # CMake 3.12+ only.
-                build_args += ["-j{}".format(self.parallel)]
+                build_args += [f"-j{self.parallel}"]
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
@@ -132,5 +129,6 @@ setup(
     ext_modules=[CMakeExtension("cmake_example")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    extras_require={"test": ["pytest"]},
+    extras_require={"test": ["pytest>=6.0"]},
+    python_requires=">=3.6",
 )
