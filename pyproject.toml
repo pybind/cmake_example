@@ -21,5 +21,8 @@ testpaths = ["tests"]
 test-command = "pytest {project}/tests"
 test-extras = ["test"]
 test-skip = ["*universal2:arm64"]
+
 # Setuptools bug causes collision between pypy and cpython artifacts
-before-build = "rm -rf {project}/build"
+[tool.cibuildwheel.environment]
+PIP_USE_DEPRECATED = "out-of-tree-build"
+  
