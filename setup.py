@@ -106,15 +106,12 @@ class CMakeBuild(build_ext):
                 # CMake 3.12+ only.
                 build_args += [f"-j{self.parallel}"]
 
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
+        build_temp = os.path.join(self.build_temp, ext.name)
+        if not os.path.exists(build_temp):
+            os.makedirs(build_temp)
 
-        subprocess.check_call(
-            ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
-        )
-        subprocess.check_call(
-            ["cmake", "--build", "."] + build_args, cwd=self.build_temp
-        )
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
+        subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
 
 
 # The information here can also be placed in setup.cfg - better separation of
