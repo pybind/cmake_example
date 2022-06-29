@@ -65,6 +65,8 @@ jobs:
 
     steps:
     - uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
 
     - uses: actions/download-artifact@v2
       with:
