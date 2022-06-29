@@ -64,7 +64,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
 
     - uses: actions/download-artifact@v2
       with:
