@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest] # TODO: windows-latest is broken on conda, check why
-        python-version: ["3.7", "3.9"]
+        python-version: ["3.8", "3.10"]
 
     runs-on: ${{ matrix.platform }}
 
@@ -34,8 +34,9 @@ jobs:
           channels: conda-forge
           channel-priority: strict
 
+      # Currently conda-build requires the dead package "toml" but doesn't declare it
       - name: Prepare
-        run: conda install conda-build conda-verify pytest
+        run: conda install conda-build conda-verify pytest toml
 
       - name: Build
         run: conda build conda.recipe
