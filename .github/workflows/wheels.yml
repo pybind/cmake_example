@@ -43,7 +43,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.8.1
+    - uses: pypa/cibuildwheel@v2.9.0
       env:
         CIBW_ARCHS_MACOS: auto universal2
 
@@ -75,5 +75,4 @@ jobs:
 
     - uses: pypa/gh-action-pypi-publish@v1.5.1
       with:
-        user: __token__
         password: ${{ secrets.pypi_password }}
