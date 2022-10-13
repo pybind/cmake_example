@@ -43,7 +43,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.10.2
+    - uses: pypa/cibuildwheel@v2.11.1
       env:
         CIBW_ARCHS_MACOS: auto universal2
 
