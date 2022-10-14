@@ -23,14 +23,13 @@ class CMakeExtension(Extension):
     def __init__(self, name: str, sourcedir: str = "") -> None:
         super().__init__(name, sources=[])
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
-        assert Path(self.sourcedir).is_absolute(), f"{self.sourcedir} must be absolute"
 
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext: CMakeExtension) -> None:
+        # Must be in this form due to bug in .resolve() only fixed in Python 3.10+
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)  # type: ignore[no-untyped-call]
         extdir = ext_fullpath.parent.resolve()
-        assert extdir.is_absolute(), f"{extdir} must be absolute"
 
         # Using this requires trailing slash for auto-detection & inclusion of
         # auxiliary "native" libs
