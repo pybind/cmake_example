@@ -51,7 +51,7 @@ repos:
   rev: v3.1.0
   hooks:
   - id: pyupgrade
-    args: ["--py36-plus"]
+    args: ["--py37-plus"]
 
 # Checking static types
 - repo: https://github.com/pre-commit/mirrors-mypy

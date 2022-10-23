@@ -29,7 +29,7 @@ existing CMake project structure. This is in many cases superseded by
 packages to be driven from CMake. However, there are still cases where you
 might want full control over the CMake run; and both of these approaches have
 some trade-offs not present in a pure setuptools build (see
-[`python_example`](https://github.com/pybind/python_example)). Python 3.6+ required;
+[`python_example`](https://github.com/pybind/python_example)). Python 3.7+ required;
 see the commit history for older versions of Python.
 
 ## Prerequisites
