@@ -47,7 +47,7 @@ class CMakeBuild(build_ext):
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
-            f"-DPython_EXECUTABLE={sys.executable}", # CMake variables are case sensitive
+            f"-DPython_EXECUTABLE={sys.executable}",  # CMake variables are case sensitive
         ]
         build_args = []
         # Adding CMake arguments set as environment variable
