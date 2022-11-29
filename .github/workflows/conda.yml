@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest] # TODO: windows-latest is broken on conda, check why
+        platform: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.8", "3.10"]
 
     runs-on: ${{ matrix.platform }}
