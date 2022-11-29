@@ -17,19 +17,21 @@ requirements:
 
   host:
     - python
-    - pip
+    - pip !=22.1.0
 
   run:
     - python
 
 
 test:
+  requires:
+    - pytest
   imports:
     - cmake_example
   source_files:
     - tests
   commands:
-    - python tests/test.py
+    - python -m pytest
 
 about:
   summary: A CMake example project built with pybind11.
