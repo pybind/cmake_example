@@ -7,9 +7,6 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.isort]
-profile = "black"
-
 [tool.mypy]
 files = "setup.py"
 python_version = "3.7"
@@ -36,3 +33,17 @@ test-extras = ["test"]
 test-skip = ["*universal2:arm64"]
 # Setuptools bug causes collision between pypy and cpython artifacts
 before-build = "rm -rf {project}/build"
+
+[tool.ruff]
+extend-select = [
+  "B",    # flake8-bugbear
+  "B904",
+  "I",    # isort
+  "PGH",  # pygrep-hooks
+  "RUF",  # Ruff-specific
+  "UP",   # pyupgrade
+]
+extend-ignore = [
+  "E501",   # Line too long
+]
+target-version = "py37"
