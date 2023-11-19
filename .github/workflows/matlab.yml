@@ -1,0 +1,47 @@
+name: matlab
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+
+
+jobs:
+  matlab:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - run: |
+          echo "CC=gcc-9" >> $GITHUB_ENV
+          echo "CXX=g++-9" >> $GITHUB_ENV
+          VERBOSE=1 pip install --verbose -e .
+
+      - run: |
+          echo "m = py.importlib.import_module('cmake_example')" > test.m
+          echo "AStruct = m.AStruct" >> test.m
+          echo "AStruct()" >> test.m
+          cat test.m
+
+      - run: python -c "import cmake_example as m; m.AStruct()"
+
+      - uses: matlab-actions/setup-matlab@v0
+        with:
+          release: R2022a
+
+      - uses: matlab-actions/run-command@v0
+        with:
+          command: test
