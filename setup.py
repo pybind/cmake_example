@@ -4,10 +4,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from pybind11 import get_cmake_dir
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
-
-from pybind11 import get_cmake_dir
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
