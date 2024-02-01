@@ -11,6 +11,10 @@ struct AStruct {
     AStruct() {
     }
 };
+struct BStruct {
+    BStruct(AStruct &a) {
+    }
+};
 
 namespace py = pybind11;
 
@@ -41,6 +45,7 @@ PYBIND11_MODULE(cmake_example, m) {
     )pbdoc");
 
     py::class_<AStruct>(m, "AStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<>());
+    py::class_<BStruct>(m, "BStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<AStruct&>());
 
     m.def("fun", [](AStruct &a) { return 44; }, "doc", py::arg("a") );
 

@@ -9,3 +9,4 @@ def test_main():
     a = m.AStruct()
     assert a is not None
     m.fun(a)
+    b = m.BStruct(a)
