@@ -38,9 +38,9 @@ jobs:
 
       - run: python -c "import cmake_example as m; m.AStruct()"
 
-      - run: |
-          echo "pybind11_type=type" > pybind11_builtins.py
-          echo "PYTHONPATH=." >> $GITHUB_ENV
+      #- run: |
+      #    echo "pybind11_type=type" > pybind11_builtins.py
+      #    echo "PYTHONPATH=." >> $GITHUB_ENV
 
       - uses: matlab-actions/setup-matlab@v0
         with:

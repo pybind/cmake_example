@@ -40,7 +40,7 @@ PYBIND11_MODULE(cmake_example, m) {
         Some other explanation about the subtract function.
     )pbdoc");
 
-    py::class_<AStruct>(m, "AStruct").def(py::init<>());
+    py::class_<AStruct>(m, "AStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<>());
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
