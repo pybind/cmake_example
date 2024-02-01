@@ -42,6 +42,8 @@ PYBIND11_MODULE(cmake_example, m) {
 
     py::class_<AStruct>(m, "AStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<>());
 
+    m.def("fun", [](AStruct &a) { return 44; } );
+
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else
