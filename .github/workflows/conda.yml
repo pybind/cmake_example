@@ -28,7 +28,7 @@ jobs:
           submodules: true
 
       - name: Get conda
-        uses: conda-incubator/setup-miniconda@v2.2.0
+        uses: conda-incubator/setup-miniconda@v3.0.1
         with:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
