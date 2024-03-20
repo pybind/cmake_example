@@ -48,7 +48,7 @@ repos:
     - id: mypy
       files: "setup.py"
       args: []
-      additional_dependencies: [types-setuptools]
+      additional_dependencies: [types-setuptools, pybind11]
 
 # Changes tabs to spaces
 - repo: https://github.com/Lucas-C/pre-commit-hooks
