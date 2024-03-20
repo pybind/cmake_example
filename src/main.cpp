@@ -7,6 +7,15 @@ int add(int i, int j) {
     return i + j;
 }
 
+struct AStruct {
+    AStruct() {
+    }
+};
+struct BStruct {
+    BStruct(AStruct &a) {
+    }
+};
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(cmake_example, m) {
@@ -34,6 +43,11 @@ PYBIND11_MODULE(cmake_example, m) {
 
         Some other explanation about the subtract function.
     )pbdoc");
+
+    py::class_<AStruct>(m, "AStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<>());
+    py::class_<BStruct>(m, "BStruct", py::metaclass((PyObject *) &PyType_Type)).def(py::init<AStruct&>());
+
+    m.def("fun", [](AStruct &a) { return 44; }, "doc", py::arg("a") );
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
